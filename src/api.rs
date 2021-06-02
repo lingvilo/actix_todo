@@ -5,8 +5,8 @@ use actix_web::{dev, error, http, web, Error, HttpResponse, Responder, Result};
 // use futures::future::{err, Either, Future, IntoFuture};
 // use tera::{Context, Tera};
 
-use crate::db;
-use crate::session::{self, FlashMessage};
+// use crate::db;
+// use crate::session::{self, FlashMessage};
 
 pub fn index() -> HttpResponse {
     HttpResponse::Ok().body("Hello world")
