@@ -1,28 +1,28 @@
-#[macro_use]
-extern crate diesel;
+// #[macro_use]
+// extern crate diesel;
 #[macro_use]
 extern crate log;
-#[macro_use]
-extern crate serde_derive;
-#[macro_use]
-extern crate tera;
+// #[macro_use]
+// extern crate serde_derive;
+// #[macro_use]
+// extern crate tera;
 
 use std::{env, io};
 
-use actix_files as fs;
-use actix_session::CookieSession;
+// use actix_files as fs;
+// use actix_session::CookieSession;
 use actix_web::middleware::{errhandlers::ErrorHandlers, Logger};
 use actix_web::{http, web, App, HttpServer};
-use dotenv::dotenv;
-use tera::Tera;
+// use dotenv::dotenv;
+// use tera::Tera;
 
 mod api;
-mod db;
-mod model;
-mod schema;
-mod session;
+// mod db;
+// mod model;
+// mod schema;
+// mod session;
 
-static SESSION_SIGNING_KEY: &[u8] = &[0; 32];
+// static SESSION_SIGNING_KEY: &[u8] = &[0; 32];
 
 fn main() -> io::Result<()> {
     dotenv().ok();
