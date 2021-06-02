@@ -25,7 +25,7 @@ mod api;
 // static SESSION_SIGNING_KEY: &[u8] = &[0; 32];
 
 fn main() -> io::Result<()> {
-    dotenv().ok();
+    // dotenv().ok();
 
     env::set_var("RUST_LOG", "actix_todo=debug,actix_web=info");
     env_logger::init();
