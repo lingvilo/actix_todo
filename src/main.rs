@@ -1,7 +1,7 @@
 // #[macro_use]
 // extern crate diesel;
-#[macro_use]
-extern crate log;
+// #[macro_use]
+// extern crate log;
 // #[macro_use]
 // extern crate serde_derive;
 // #[macro_use]
@@ -24,17 +24,19 @@ mod api;
 
 // static SESSION_SIGNING_KEY: &[u8] = &[0; 32];
 
-fn main() -> io::Result<()> {
+#[actix_web::main]
+async fn main() -> io::Result<()> {
     // dotenv().ok();
 
     env::set_var("RUST_LOG", "actix_todo=debug,actix_web=info");
-    env_logger::init();
+    // env_logger::init();
 
     // let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     // let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
     let app = move || {
-        debug!("Constructing the App");
+        // debug!("Constructing the App");
+        println!("Constructing the App");
 
         // let templates: Tera = compile_templates!("templates/**/*");
 
@@ -54,7 +56,7 @@ fn main() -> io::Result<()> {
             .wrap(Logger::default())
             // .wrap(session_store)
             // .wrap(error_handlers)
-            .service(web::resource("/").route(web::get().to_async(api::index)))
+            .route("/", web::get().to(api::index))
         // .service(web::resource("/todo").route(web::post().to_async(api::create)))
         // .service(
         //     web::resource("/todo/{id}").route(web::post().to_async(api::update)),
@@ -62,6 +64,7 @@ fn main() -> io::Result<()> {
         // .service(fs::Files::new("/static", "static/"))
     };
 
-    debug!("Starting server");
-    HttpServer::new(app).bind("0.0.0.0:8088")?.run()
+    // debug!("Starting server");
+    println!("Starting server");
+    HttpServer::new(app).bind("0.0.0.0:8088")?.run().await
 }
