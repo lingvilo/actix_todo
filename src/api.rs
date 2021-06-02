@@ -13,29 +13,7 @@ pub fn index(
     tmpl: web::Data<Tera>,
     session: Session,
 ) -> impl Future<Item = HttpResponse, Error = Error> {
-    web::block(move || db::get_all_tasks(&pool))
-        .from_err()
-        .then(move |res| match res {
-            Ok(tasks) => {
-                let mut context = Context::new();
-                context.insert("tasks", &tasks);
-
-                //Session is set during operations on other endpoints
-                //that can redirect to index
-                if let Some(flash) = session::get_flash(&session)? {
-                    context.insert("msg", &(flash.kind, flash.message));
-                    session::clear_flash(&session);
-                }
-
-                let rendered =
-                    tmpl.render("index.html.tera", &context).map_err(|e| {
-                        error::ErrorInternalServerError(e.description().to_owned())
-                    })?;
-
-                Ok(HttpResponse::Ok().body(rendered))
-            }
-            Err(e) => Err(e),
-        })
+    Ok(HttpResponse::Ok().body("Hello world"))
 }
 
 #[derive(Deserialize)]
@@ -50,12 +28,9 @@ pub fn create(
 ) -> impl Future<Item = HttpResponse, Error = Error> {
     if params.description.is_empty() {
         Either::A(
-            session::set_flash(
-                &session,
-                FlashMessage::error("Description cannot be empty"),
-            )
-            .map(|_| redirect_to("/"))
-            .into_future(),
+            session::set_flash(&session, FlashMessage::error("Description cannot be empty"))
+                .map(|_| redirect_to("/"))
+                .into_future(),
         )
     } else {
         Either::B(
@@ -122,10 +97,7 @@ fn delete(
         .from_err()
         .then(move |res| match res {
             Ok(_) => {
-                session::set_flash(
-                    &session,
-                    FlashMessage::success("Task was deleted."),
-                )?;
+                session::set_flash(&session, FlashMessage::success("Task was deleted."))?;
                 Ok(redirect_to("/"))
             }
             Err(e) => Err(e),
@@ -156,9 +128,7 @@ pub fn not_found<B>(res: dev::ServiceResponse<B>) -> Result<ErrorHandlerResponse
     ))
 }
 
-pub fn internal_server_error<B>(
-    res: dev::ServiceResponse<B>,
-) -> Result<ErrorHandlerResponse<B>> {
+pub fn internal_server_error<B>(res: dev::ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>> {
     let new_resp = NamedFile::open("static/errors/500.html")?
         .set_status_code(res.status())
         .respond_to(res.request())?;

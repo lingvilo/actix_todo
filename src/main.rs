@@ -30,36 +30,36 @@ fn main() -> io::Result<()> {
     env::set_var("RUST_LOG", "actix_todo=debug,actix_web=info");
     env_logger::init();
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let pool = db::init_pool(&database_url).expect("Failed to create pool");
+    // let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    // let pool = db::init_pool(&database_url).expect("Failed to create pool");
 
     let app = move || {
         debug!("Constructing the App");
 
-        let templates: Tera = compile_templates!("templates/**/*");
+        // let templates: Tera = compile_templates!("templates/**/*");
 
-        let session_store = CookieSession::signed(SESSION_SIGNING_KEY).secure(false);
+        // let session_store = CookieSession::signed(SESSION_SIGNING_KEY).secure(false);
 
-        let error_handlers = ErrorHandlers::new()
-            .handler(
-                http::StatusCode::INTERNAL_SERVER_ERROR,
-                api::internal_server_error,
-            )
-            .handler(http::StatusCode::BAD_REQUEST, api::bad_request)
-            .handler(http::StatusCode::NOT_FOUND, api::not_found);
+        // let error_handlers = ErrorHandlers::new()
+        //     .handler(
+        //         http::StatusCode::INTERNAL_SERVER_ERROR,
+        //         api::internal_server_error,
+        //     )
+        //     .handler(http::StatusCode::BAD_REQUEST, api::bad_request)
+        //     .handler(http::StatusCode::NOT_FOUND, api::not_found);
 
         App::new()
-            .data(templates)
-            .data(pool.clone())
+            // .data(templates)
+            // .data(pool.clone())
             .wrap(Logger::default())
-            .wrap(session_store)
-            .wrap(error_handlers)
+            // .wrap(session_store)
+            // .wrap(error_handlers)
             .service(web::resource("/").route(web::get().to_async(api::index)))
-            .service(web::resource("/todo").route(web::post().to_async(api::create)))
-            .service(
-                web::resource("/todo/{id}").route(web::post().to_async(api::update)),
-            )
-            .service(fs::Files::new("/static", "static/"))
+        // .service(web::resource("/todo").route(web::post().to_async(api::create)))
+        // .service(
+        //     web::resource("/todo/{id}").route(web::post().to_async(api::update)),
+        // )
+        // .service(fs::Files::new("/static", "static/"))
     };
 
     debug!("Starting server");
